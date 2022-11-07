@@ -1,5 +1,5 @@
 keys/*
-/keys
+!keys/readme.md
 
 /terraform/.terraform
 /terraform/.terraform.*
