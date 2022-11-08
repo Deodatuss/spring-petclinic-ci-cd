@@ -12,7 +12,7 @@ variable "zone" {
 }
 variable "cred_file" {
     type        = string
-    default     = "../keys/kuber-cicd-7a0d520fda36.json"   
+    default     = "../keys/kuber-cicd-70c7273c7903.json"   
 }
 variable "ip_cidr_range" {
     type        = string
