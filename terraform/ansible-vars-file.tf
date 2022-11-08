@@ -10,8 +10,9 @@ resource "local_file" "tf_ansible_vars_file_new" {
     tf_cred_file: "${var.cred_file}"
 
     tf_control_instance_internal_ip: "${google_compute_instance.default.network_interface.0.network_ip}"
-    
+    tf_control_instance_external_ip: "${google_compute_address.static_external.address}"
+
     
     DOC
-  filename = "../ansible/tf_ansible_vars_file.yaml"
+  filename = "../ansible/tf-ansible-vars-file.yaml"
 }

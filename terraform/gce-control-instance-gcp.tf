@@ -1,4 +1,8 @@
 # not by instance template, (or maybe by it), but certainly not a MIG but a standalone instance with only 22 port open
+resource "google_compute_address" "static_external" {
+  name = "ipv4-address"
+  address_type = "EXTERNAL"
+}
 
 resource "google_compute_instance" "default" {
   name         = "internal-access-vm"
@@ -16,10 +20,10 @@ resource "google_compute_instance" "default" {
     }
   }
 
-
   network_interface {
     subnetwork = google_compute_subnetwork.terr_sub_vpc_1.id
     access_config {
+    nat_ip = google_compute_address.static_external.address
     network_tier = "STANDARD"
     }
   }

@@ -1,0 +1,5 @@
+plugin: gcp_compute
+projects:
+  - kuber-cicd
+auth_kind: serviceaccount
+service_account_file: ../keys/kuber-cicd-7a0d520fda36.json

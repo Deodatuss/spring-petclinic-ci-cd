@@ -7,5 +7,3 @@ tf_zone: "us-central1-c"
 tf_cred_file: "../keys/kuber-cicd-7a0d520fda36.json"
 
 tf_control_instance_internal_ip: "10.10.0.2"
-    
-    
