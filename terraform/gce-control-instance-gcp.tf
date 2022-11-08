@@ -9,7 +9,11 @@ resource "google_compute_instance" "default" {
   machine_type = "e2-medium"
   zone         = var.zone
 
-  tags = ["admin", "jenkins-vm", "ansible-vm"]
+  tags = ["admin", "jenkins-vm", "ansible-vm", "allow-ssh"]
+
+  metadata = {
+    ssh-keys = "${var.ssh_user}:${file(local_sensitive_file.public_ssh_key.content)}"
+  }
 
   boot_disk {
     initialize_params {

@@ -30,6 +30,7 @@ resource "google_compute_subnetwork" "terr_sub_vpc_1" {
 resource "google_compute_firewall" "allow_ssh_http_for_vm" {
   name    = "allow-ssh-http-for-vm"
   network = google_compute_network.terr_vpc_1.name
+  target_tags = ["allow-ssh"]
   priority = 10
   allow {
     protocol = "icmp"
@@ -37,7 +38,7 @@ resource "google_compute_firewall" "allow_ssh_http_for_vm" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "80"]
+    ports    = ["22"]
   }
 
   source_ranges = ["0.0.0.0/0"]
