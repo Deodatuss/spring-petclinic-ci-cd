@@ -3,7 +3,7 @@ keys/*
 
 /terraform/.terraform
 /terraform/.terraform.*
-/terraform/*.tfstate
+# /terraform/*.tfstate -- don't ignore tfstate file
 /terraform/*.tfstate.*
 
 target/*

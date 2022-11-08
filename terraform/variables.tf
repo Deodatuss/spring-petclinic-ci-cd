@@ -1,6 +1,10 @@
+variable "cred_file" {
+    type        = string
+    default     = "../keys/kuber-terr-cicd-a90c610d0b13.json"   
+}
 variable "gcp_project" {
     type        = string
-    default     = "kuber-cicd"
+    default     = "kuber-terr-cicd"
 }
 variable "region" {
     type        = string
@@ -9,10 +13,6 @@ variable "region" {
 variable "zone" {
     type        = string
     default     = "us-central1-c"
-}
-variable "cred_file" {
-    type        = string
-    default     = "../keys/kuber-cicd-70c7273c7903.json"   
 }
 variable "ip_cidr_range" {
     type        = string

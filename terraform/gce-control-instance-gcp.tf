@@ -24,7 +24,7 @@ resource "google_compute_instance" "default" {
     subnetwork = google_compute_subnetwork.terr_sub_vpc_1.id
     access_config {
     nat_ip = google_compute_address.static_external.address
-    network_tier = "STANDARD"
+    network_tier = "PREMIUM"
     }
   }
 
