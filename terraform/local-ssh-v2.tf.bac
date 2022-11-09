@@ -1,0 +1,23 @@
+resource "null_resource" "ssh_gen_script" {
+  triggers = {
+    user_name = var.ssh_user
+    keyfile_name = var.ssh_keyfile_name
+    keyfiles_folder_name = var.keyfiles_folder_name
+  }
+  provisioner "local-exec" {
+    working_dir = "../${self.triggers.keyfiles_folder_name}/"
+    command = "ssh-keygen -t rsa -f ./${self.triggers.ssh_keyfile_name} -C ${self.triggers.ssh_user} -b 2048 -N \"\" "
+  }
+  provisioner "local-exec" {
+    working_dir = "../${self.triggers.keyfiles_folder_name}/"
+    command = "rm temp_${self.triggers.ssh_keyfile_name} temp_${self.triggers.ssh_keyfile_name}.pub"
+    on_failure = continue
+    when = destroy
+  }
+  provisioner "local-exec" {
+    working_dir = "../${self.triggers.keyfiles_folder_name}/"
+    command = "del temp_${self.triggers.ssh_keyfile_name} temp_${self.triggers.ssh_keyfile_name}.pub"
+    on_failure = continue
+    when = destroy
+  }
+}

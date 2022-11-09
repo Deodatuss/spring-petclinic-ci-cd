@@ -1,20 +1,15 @@
 # not by instance template, (or maybe by it), but certainly not a MIG but a standalone instance with only 22 port open
+locals {
+  public_ssh_key_path = "../${var.keyfiles_folder_name_or_relative_path}/${var.ssh_keyfile_name}.pub"
+  private_ssh_key_path = "../${var.keyfiles_folder_name_or_relative_path}/${var.ssh_keyfile_name}"
+}
+
 resource "google_compute_address" "static_external" {
   name = "ipv4-address"
   address_type = "EXTERNAL"
 }
 
-data "local_file" "input_public" {
-  filename = local_file.public_ssh_key.filename
-}
-
-data "local_sensitive_file" "input_private" {
-  filename = local_sensitive_file.private_ssh_key.filename
-}
-
 resource "google_compute_instance" "default" {
-  depends_on = [local_file.public_ssh_key]
-
   name         = "internal-access-vm"
   machine_type = "e2-medium"
   zone         = var.zone
@@ -22,7 +17,7 @@ resource "google_compute_instance" "default" {
   tags = ["admin", "jenkins-vm", "ansible-vm", "allow-ssh"]
 
   metadata = {
-    ssh-keys = "${var.ssh_user}:${data.local_file.input_public.content}"
+    ssh-keys = "${var.ssh_user}:${file(local.public_ssh_key_path)}"
   }
 
   boot_disk {
@@ -37,8 +32,8 @@ resource "google_compute_instance" "default" {
   network_interface {
     subnetwork = google_compute_subnetwork.terr_sub_vpc_1.id
     access_config {
-    nat_ip = google_compute_address.static_external.address
-    network_tier = "PREMIUM"
+    # nat_ip = google_compute_address.static_external.address
+    # network_tier = "PREMIUM"
     }
   }
 
@@ -47,17 +42,17 @@ resource "google_compute_instance" "default" {
     email = google_service_account.custom_service_account_1.email
     scopes = ["cloud-platform"]
   }
-  provisioner "remote-exec" {
-    inline = ["echo 'Waiting until SSH is really ready'"]
-
-    connection {
-      type = "ssh"
-      user = var.ssh_user
-      private_key = data.local_sensitive_file.input_private.content
-      host = google_compute_instance.default.network_interface.0.access_config.0.nat_ip
-    }
-  }
+  #provisioner "remote-exec" {
+  #  inline = ["echo 'Waiting until SSH is really ready'"]
+#
+#    connection {
+#      type = "ssh"
+#      user = var.ssh_user
+#      private_key = file(local.private_ssh_key_path)
+#      host = google_compute_instance.default.network_interface.0.access_config.0.nat_ip
+#    }
+#  }
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${google_compute_instance.default.network_interface.0.access_config.0.nat_ip}, --private-key ${local_sensitive_file.private_ssh_key.filename} ../${var.ansible_folder_name}/playbook-for-jenkins.yaml"
+    command = "ansible-playbook -i ${google_compute_instance.default.network_interface.0.access_config.0.nat_ip}, --private-key ${local.private_ssh_key_path} ../${var.ansible_folder_name}/playbook-for-jenkins.yaml"
   }
 }

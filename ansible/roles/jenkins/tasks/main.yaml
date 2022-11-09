@@ -2,7 +2,12 @@
 - name: apt update
   apt:
     name: '*'
-    state: latest 
+    state: latest
+
+- name: install openjdk
+  apt:
+    name: openjdk-11-jdk
+    state: present
 
 - name: Ensure that jenkins key is installed
   apt_key:
@@ -18,9 +23,29 @@
 - name: Ensure Jenkins is installed
   apt:
     name: jenkins
-    update_cache: yes
+    state: present
 
-- name: Ensure Jenkins is running
-  service:
+- name: Ensure Jenkins is started
+  systemd:
     name: jenkins
     state: started
+
+- name: Ensure Jenkins is enabled
+  systemd:
+    name: jenkins
+    enabled: true
+
+####################################3
+
+- name: sleep for 30 seconds and continue with play
+  wait_for: timeout=30
+  delegate_to: localhost
+
+- name: init password jenkin
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: print init password jenkins
+  debug:
+    var: result.stdout
