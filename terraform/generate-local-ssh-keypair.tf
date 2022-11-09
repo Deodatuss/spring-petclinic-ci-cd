@@ -5,7 +5,7 @@ resource "null_resource" "ssh_gen_script" {
   }
   provisioner "local-exec" {
     working_dir = "../${var.keyfiles_folder_name}/"
-    command = "ssh-keygen -t rsa -f ./temp_${var.ssh_keyfile_name} -C temp_${var.ssh_user} -b 2048 -N \"\" "
+    command = "ssh-keygen -t rsa -f ./temp_${var.ssh_keyfile_name} -C ${var.ssh_user} -b 2048 -N \"\" "
   }
 }
 

@@ -17,7 +17,7 @@ variable "ssh_user" {
 }
 variable "ssh_keyfile_name" {
     type        = string
-    default     = "ansible_rsa"   
+    default     = "ansible_rsa_v2"   
 }
 
 
