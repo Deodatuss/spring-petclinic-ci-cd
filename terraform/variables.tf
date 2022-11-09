@@ -1,3 +1,8 @@
+variable "ansible_folder_name" {
+    type        = string
+    default     = "ansible"     
+}
+
 variable "keyfiles_folder_name" {
     type        = string
     default     = "keys"     
@@ -14,6 +19,8 @@ variable "ssh_keyfile_name" {
     type        = string
     default     = "ansible_rsa"   
 }
+
+
 
 variable "gcp_project" {
     type        = string
