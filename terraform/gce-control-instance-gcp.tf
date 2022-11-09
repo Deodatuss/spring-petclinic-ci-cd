@@ -5,6 +5,8 @@ resource "google_compute_address" "static_external" {
 }
 
 resource "google_compute_instance" "default" {
+  depends_on = [local_file.public_ssh_key]
+
   name         = "internal-access-vm"
   machine_type = "e2-medium"
   zone         = var.zone
@@ -12,7 +14,7 @@ resource "google_compute_instance" "default" {
   tags = ["admin", "jenkins-vm", "ansible-vm", "allow-ssh"]
 
   metadata = {
-    ssh-keys = "${var.ssh_user}:${file(local_sensitive_file.public_ssh_key.content)}"
+    ssh-keys = "${var.ssh_user}:${file(local_file.public_ssh_key.filename)}"
   }
 
   boot_disk {

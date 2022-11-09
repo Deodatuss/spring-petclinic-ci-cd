@@ -1,0 +1,26 @@
+---
+- name: apt update
+  apt:
+    name: '*'
+    state: latest 
+
+- name: Ensure that jenkins key is installed
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    state: present
+
+
+- name: Ensure that repo is configured
+  apt_repository:
+    repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+    state: present
+
+- name: Ensure Jenkins is installed
+  apt:
+    name: jenkins
+    update_cache: yes
+
+- name: Ensure Jenkins is running
+  service:
+    name: jenkins
+    state: started
