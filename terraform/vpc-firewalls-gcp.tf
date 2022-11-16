@@ -43,3 +43,17 @@ resource "google_compute_firewall" "allow_ssh_http_for_vm" {
 
   source_ranges = ["0.0.0.0/0"]
 }
+
+resource "google_compute_firewall" "allow_jenkins_for_local_tester_ip" {
+  name    = "allow-jenkins-http-for-tester-ip"
+  network = google_compute_network.terr_vpc_1.name
+  target_tags = ["allow-jenkins"]
+  priority = 10
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "8080"]
+  }
+
+  source_ranges = ["80.243.153.111/32"]
+}

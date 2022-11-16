@@ -14,7 +14,7 @@ resource "google_compute_instance" "default" {
   machine_type = "e2-medium"
   zone         = var.zone
 
-  tags = ["admin", "jenkins-vm", "ansible-vm", "allow-ssh"]
+  tags = ["admin", "jenkins-vm", "ansible-vm", "allow-ssh", "allow-jenkins"]
 
   metadata = {
     ssh-keys = "${var.ssh_user}:${file(local.public_ssh_key_path)}"
@@ -42,17 +42,21 @@ resource "google_compute_instance" "default" {
     email = google_service_account.custom_service_account_1.email
     scopes = ["cloud-platform"]
   }
-  #provisioner "remote-exec" {
-  #  inline = ["echo 'Waiting until SSH is really ready'"]
-#
-#    connection {
-#      type = "ssh"
-#      user = var.ssh_user
-#      private_key = file(local.private_ssh_key_path)
-#      host = google_compute_instance.default.network_interface.0.access_config.0.nat_ip
-#    }
-#  }
+  provisioner "remote-exec" {
+   inline = ["echo 'Waiting until SSH is really ready'"]
+
+   connection {
+     type = "ssh"
+     user = var.ssh_user
+     private_key = file(local.private_ssh_key_path)
+     host = google_compute_instance.default.network_interface.0.access_config.0.nat_ip
+   }
+ }
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${google_compute_instance.default.network_interface.0.access_config.0.nat_ip}, --private-key ${local.private_ssh_key_path} ../${var.ansible_folder_name}/playbook-for-jenkins.yaml"
+    command = join(" ", ["ANSIBLE_CONFIG='../${var.ansible_folder_name}/ansible.cfg'",
+    "ansible-playbook",
+    "-i ${google_compute_instance.default.network_interface.0.access_config.0.nat_ip},",
+    "--private-key ${local.private_ssh_key_path}",
+    "../${var.ansible_folder_name}/playbook-for-jenkins.yaml"])
   }
 }

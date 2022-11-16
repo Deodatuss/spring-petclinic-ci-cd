@@ -6,7 +6,7 @@ tf_region: "us-central1"
 tf_zone: "us-central1-c"
 tf_cred_file: "../keys/kuber-terr-cicd-a90c610d0b13.json"
 
-tf_control_instance_internal_ip: "10.10.0.5"
+tf_control_instance_internal_ip: "10.10.0.42"
 tf_control_instance_external_ip: "35.232.117.70"
 
-    
+
